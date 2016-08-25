@@ -99,7 +99,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-nodemon');
   grunt.registerTask('server-dev', function (target) {
-    console.log('GRUNT!!!!!!!!!!!', target);
     grunt.task.run([ 'nodemon', 'watch' ]);
   });
 
@@ -107,12 +106,30 @@ module.exports = function(grunt) {
   // Main grunt tasks
   ////////////////////////////////////////////////////
 
-  grunt.registerTask('test', function() {
-    
-    grunt.fail.fatal('error!!!!!!!');
-    grunt.task.run(['mochaTest']);
-  });
+  // grunt.registerTask('eslint', ['']);
 
+  // grunt.registerTask('test', function() {
+  //   var msg = 'Do something...';
+  //   grunt.log.write(msg);
+  //   try {
+  //     grunt.task.run(['mochaTest']);
+  //     grunt.log.ok();
+  //   } catch (e) {
+  //     grunt.log.or.write(msg).error().error(e.message);
+  //     grunt.fail.warn('Something went Wrong!!!!');
+  //   }
+  // });
+
+  grunt.registerTask('test', function() {
+    grunt.task.run(['mochaTest']);
+    if (failureOfSomeKind) {
+      grunt.log.error('error!!!!!!!!!!');
+    }
+    if (ifErrors) { 
+      return false; 
+    }
+    grunt.log.writeln('Success!!!!!!!!!!');
+  });
 
   // grunt.registerTask('build', [
   //   'concat', 
@@ -120,8 +137,16 @@ module.exports = function(grunt) {
   // ]);
 
   grunt.registerTask('build', function() {
-    grunt.task.run(['concat']);
-    grunt.fail.fatal('error!!!!!!!!!!!!');
+    var msg = 'Do something...';
+    grunt.log.write(msg);
+    try {
+      grunt.task.run(['concat']);
+      grunt.log.ok();
+    } catch (e) {
+      grunt.log.or.write(msg).error().error(e.message);
+      grunt.fail.warn('Something went Wrong!!!!');
+    }
+    // grunt.fail.fatal('error!!!!!!!!!!!!');
     grunt.task.run(['uglify']);
   });
 
