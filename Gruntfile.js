@@ -3,6 +3,13 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ';',
+      },
+      dist: {
+        src: ['public/client/*.js'],
+        dest: 'public/dist/built.js',
+      },
     },
 
     mochaTest: {
@@ -21,15 +28,37 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        mangle: false
+      },
+      myTarget: {
+        files: {
+          'public/dist/output.min.js': ['public/dist/built.js']
+        }
+      }
     },
 
     eslint: {
       target: [
         // Add list of files to lint here
+        'public/client/*.js',
+        'server-config.js',
+        'server.js',
+        'app/**/*.js',
+        'lib/utility.js'
       ]
     },
 
     cssmin: {
+      target: {
+        files: [{
+          expand: true,
+          cwd: 'release/css',
+          src: ['*.css', '!*.min.css'],
+          dest: 'release/css',
+          ext: '.min.css'
+        }]
+      }
     },
 
     watch: {
@@ -49,8 +78,14 @@ module.exports = function(grunt) {
       }
     },
 
+    commitStatement: 'Add changes',
     shell: {
       prodServer: {
+        command: [
+          'git add .',
+          'git commit -m "<%= commitStatement %>"',
+          'git push live master'
+        ].join('&&')
       }
     },
   });
@@ -63,8 +98,8 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-shell');
   grunt.loadNpmTasks('grunt-nodemon');
-
   grunt.registerTask('server-dev', function (target) {
+    console.log('GRUNT!!!!!!!!!!!', target);
     grunt.task.run([ 'nodemon', 'watch' ]);
   });
 
@@ -72,12 +107,24 @@ module.exports = function(grunt) {
   // Main grunt tasks
   ////////////////////////////////////////////////////
 
-  grunt.registerTask('test', [
-    'mochaTest'
-  ]);
+  grunt.registerTask('test', function() {
+    
+    grunt.fail.fatal('error!!!!!!!');
+    grunt.task.run(['mochaTest']);
+  });
 
-  grunt.registerTask('build', [
-  ]);
+
+  // grunt.registerTask('build', [
+  //   'concat', 
+  //   'uglify'
+  // ]);
+
+  grunt.registerTask('build', function() {
+    grunt.task.run(['concat']);
+    grunt.fail.fatal('error!!!!!!!!!!!!');
+    grunt.task.run(['uglify']);
+  });
+
 
   grunt.registerTask('upload', function(n) {
     if (grunt.option('prod')) {
