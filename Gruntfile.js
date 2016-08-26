@@ -6,9 +6,12 @@ module.exports = function(grunt) {
       options: {
         separator: ';',
       },
-      dist: {
-        src: ['public/client/*.js'],
-        dest: 'public/dist/built.js',
+      basic_and_extras: {
+        files: {
+          'public/dist/libraries.js': ['public/lib/jquery.js', 'public/lib/underscore.js', 
+                                      'public/lib/backbone.js', 'public/lib/handlebars.js'],                                 
+          'public/dist/client.js': ['public/client/*.js']
+        }
       },
     },
 
@@ -33,7 +36,8 @@ module.exports = function(grunt) {
       },
       myTarget: {
         files: {
-          'public/dist/output.min.js': ['public/dist/built.js']
+          'public/dist/client.min.js': ['public/dist/client.js'],
+          'public/dist/libraries.min.js': ['public/dist/libraries.js']
         }
       }
     },
@@ -108,28 +112,29 @@ module.exports = function(grunt) {
 
   // grunt.registerTask('eslint', ['']);
 
-  // grunt.registerTask('test', function() {
-  //   var msg = 'Do something...';
-  //   grunt.log.write(msg);
-  //   try {
-  //     grunt.task.run(['mochaTest']);
-  //     grunt.log.ok();
-  //   } catch (e) {
-  //     grunt.log.or.write(msg).error().error(e.message);
-  //     grunt.fail.warn('Something went Wrong!!!!');
-  //   }
-  // });
-
   grunt.registerTask('test', function() {
+    var msg = 'Do something...';
+    grunt.log.write(msg);
     grunt.task.run(['mochaTest']);
-    if (failureOfSomeKind) {
-      grunt.log.error('error!!!!!!!!!!');
-    }
-    if (ifErrors) { 
-      return false; 
-    }
-    grunt.log.writeln('Success!!!!!!!!!!');
+    // try {
+    //   grunt.log.ok();
+    //   grunt.log.error()
+    // } catch (e) {
+    //   grunt.log.or.write(msg).error().error(e.message);
+    //   grunt.fail.fatal('Something went Wrong!!!!');
+    // }
   });
+
+  // grunt.registerTask('test', function() {
+  //   grunt.task.run(['mochaTest']);
+  //   if (failureOfSomeKind) {
+  //     grunt.log.error('error!!!!!!!!!!');
+  //   }
+  //   if (ifErrors) { 
+  //     return false; 
+  //   }
+  //   grunt.log.writeln('Success!!!!!!!!!!');
+  // });
 
   // grunt.registerTask('build', [
   //   'concat', 
